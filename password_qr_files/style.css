@@ -2471,7 +2471,8 @@ input, .name ,.w-input{
 /* Media query for mobile devices */
 @media (max-width: 768px) {
   #qrcode canvas {
-      width: 80vw; /* 80% of the viewport width */
+      width: 85vw !important; /* 80% of the viewport width */
+      height: 85vw !important;
       max-width: none; /* Remove the max-width restriction */
   }
 }

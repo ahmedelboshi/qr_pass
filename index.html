@@ -9,19 +9,14 @@
         .wf-force-outline-none[tabindex="-1"]:focus {
             outline: none;
         }
-        @media only screen and (max-width: 600px) {
-            .qr {
-                width: 85vw;
-                height: 85vw;
-            }
-        }
+
     </style>
     <title>qr password</title>
     <meta content="tool" property="og:title">
     <meta content="tool" property="twitter:title">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta content="Webflow" name="generator">
-    <link href="./password_qr_files/password-manager-5c44bd.webflow.bc49d8b4a.css" rel="stylesheet" type="text/css">
+    <link href="./password_qr_files/style.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/" rel="preconnect">
     <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin="anonymous">
     <script src="./password_qr_files/webfont.js" type="text/javascript"></script>
@@ -51,7 +46,7 @@
         </div>
     </div>
     <section class="tool-container ">
-        <section x-show="!decodeMode" class="flex flex-col gap-10  lg:flex-row" x-data="passwordManager()">
+        <section x-show="!decodeMode" class="flex flex-row gap-10  " x-data="passwordManager()">
             <div class="w-layout-vflex qr-gen-input">
                 <div class="w-layout-hflex flex-block-8">
                     <div class="text-block">passwords or data</div><button @click="addInputGroup"
@@ -119,8 +114,8 @@
             </div>
         </section>
         <section x-show="decodeMode" class="w-layout-v flex flex-col" x-data="passwordManager()">
-            <div class="min-h-[60vh] w-full flex flex-row items-center justify-center gap-10">
-                <div class="font-normal flex  flex-col items-center mt-8">
+            <div class="min-h-[60vh] w-full flex flex-col lg:flex-row items-center justify-center gap-10">
+                <div class="font-normal flex  flex-col  items-center mt-8">
                     <button @click="()=>$refs.qrFile.click()"
                         class="px-4 py-4 flex flex-col gap-16 w-full items-center  font-normal text-xl">
                         <svg class="scale-[2] ml-3" xmlns="http://www.w3.org/2000/svg" width="85" height="85"
@@ -137,12 +132,12 @@
                 <div class="">
                     <label for="mainPassword" class="field-label">ENTER MASTER PASSWORD</label>
                     <input autocomplete="off" class="w-input" maxlength="256" name="mainPassword"
-                        placeholder="Please enter qr password" type="text" x-model="mainPassword" required>
+                        placeholder="Please enter qr password" type="text" x-model="mainPassword"  required>
                     <button @click="()=>{ decodeQRCode($refs.qrFile); }" :style="!showDecodeBtn && {display:'none'}"
                         class=" border-btn gen-qr w-button">Decode QR Code</button>
                     <div class="w-full h-10">
 
-                        <p x-show="qrDecreptionError" class="mt-2">Invalid password or file</p>
+                        <p x-show="qrDecryptionError" class="mt-2">Invalid password or file</p>
                     </div>
                 </div>
                 <!-- <div type="file"><button @click="()=>decodeQRCode($refs.qrFile)" class="btn w-button">Decode QR
@@ -255,8 +250,14 @@
                 decryptedData: '',
                 strengths: [0],
                 showDecodeBtn: false,
-                qrDecreptionError: false,
+                qrDecryptionError: false,
                 showForm:false,
+
+            init() {
+                this.$watch('mainPassword', (value) => {
+                    this.qrDecryptionError = false;
+                });
+            },
                 setData(data) {
                     console.log(data)
                     this
@@ -294,7 +295,6 @@
                         password = (this.newMainPassword ?? this.mainPassword);
                         const encryptedData = CryptoJS.AES.encrypt(dataToEncrypt, password).toString();
                         const qrCanvas = document.createElement('canvas');
-                        qrCanvas.classList.add("qr")
                         qrCanvas.style.marginBottom = '20px';
                         this.$refs.qrcode.innerHTML = '';
                         this.$refs.qrcode.appendChild(qrCanvas);
@@ -365,7 +365,7 @@
                         const parsedData = JSON.parse(decryptedData);
                         console.log(parsedData)
                         if (parsedData !== undefined) {
-                            this.qrDecreptionError = false;
+                            this.qrDecryptionError = false;
                             this.inputGroups = parsedData
                             this.newMainPassword = this.mainPassword;
                             this.generateQRCodes();
@@ -377,7 +377,7 @@
                         
                         }
                     } catch (error) {
-                        this.qrDecreptionError = true;
+                        this.qrDecryptionError = true;
                         // alert("invalid main password or qr code")
                         // console.error('Decryption error:', error);
                         this.decryptedData = 'Error decrypting data';
