@@ -9,6 +9,12 @@
         .wf-force-outline-none[tabindex="-1"]:focus {
             outline: none;
         }
+        @media only screen and (max-width: 600px) {
+            .qr {
+                width: 85vw;
+                height: 85vw;
+            }
+        }
     </style>
     <title>qr password</title>
     <meta content="tool" property="og:title">
@@ -288,6 +294,7 @@
                         password = (this.newMainPassword ?? this.mainPassword);
                         const encryptedData = CryptoJS.AES.encrypt(dataToEncrypt, password).toString();
                         const qrCanvas = document.createElement('canvas');
+                        qrCanvas.classList.add("qr")
                         qrCanvas.style.marginBottom = '20px';
                         this.$refs.qrcode.innerHTML = '';
                         this.$refs.qrcode.appendChild(qrCanvas);
